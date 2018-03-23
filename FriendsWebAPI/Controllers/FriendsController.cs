@@ -12,17 +12,27 @@ namespace FriendsWebAPI.Controllers
     public class FriendsController : ApiController
     {
         FriendRepository _friendRepository = new FriendRepository();
+        Friend friend = new Friend();
 
         // GET: api/Friends
         public IEnumerable<Friend> Get()
         {
-            return _friendRepository.GetAll();
+            return _friendRepository.GetAll().ToList();
         }
 
         // GET: api/Friends/5
-        public string Get(int id)
+        public HttpResponseMessage GetById(Guid id)
         {
-            return "value";
+            var amg = _friendRepository.GetById(id);
+
+            if (amg != null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, amg);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, $"Id {amg.Id} não encontrado");
+            }
         }
 
         // POST: api/Friends
@@ -32,13 +42,25 @@ namespace FriendsWebAPI.Controllers
         }
 
         // PUT: api/Friends/5
-        public void Put(int id, [FromBody]string value)
+        public HttpResponseMessage Put(int Id, [FromBody]Friend friend)
         {
+            var amg = _friendRepository.Update(friend, Id);
+
+            if (amg == true)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, amg);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, $"Id {friend.Id} não encontrado");
+            }
         }
 
         // DELETE: api/Friends/5
-        public void Delete(int id)
-        {
-        }
+        //public void Delete(int id)
+        //{
+        //    Friend friend = new Friend();
+        //    _friendRepository.Delete();
+        //}
     }
 }

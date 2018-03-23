@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data
 {
@@ -32,8 +29,13 @@ namespace Data
                 _sqlConnection.Open();
                 sqlCommand.Parameters.AddWithValue("@Id", friend.Id);
                 sqlCommand.Parameters.AddWithValue("@Name", friend.Name);
-                sqlCommand.Parameters.AddWithValue("@Age", friend.Age);
+                sqlCommand.Parameters.AddWithValue("@SurName", friend.SurName);
+                sqlCommand.Parameters.AddWithValue("@Email", friend.Email);
+                sqlCommand.Parameters.AddWithValue("@Phone", friend.Phone);
+                sqlCommand.Parameters.AddWithValue("@Birthday", friend.Birthday);
                 sqlCommand.ExecuteNonQuery();
+
+                
             }
             catch(Exception ex)
             {
@@ -44,8 +46,9 @@ namespace Data
             }
         }
 
-        public void Update(Friend friend)
+        public bool Update(Friend friend, int Id)
         {
+            bool statusOk;
             SqlCommand sqlCommand = new SqlCommand("UpdateFriend", _sqlConnection)
             {
                 CommandType = CommandType.StoredProcedure
@@ -56,16 +59,25 @@ namespace Data
                 _sqlConnection.Open();
                 sqlCommand.Parameters.AddWithValue("@Id", friend.Id);
                 sqlCommand.Parameters.AddWithValue("@Name", friend.Name);
-                sqlCommand.Parameters.AddWithValue("@Age", friend.Age);
+                sqlCommand.Parameters.AddWithValue("@SurName", friend.SurName);
+                sqlCommand.Parameters.AddWithValue("@Email", friend.Email);
+                sqlCommand.Parameters.AddWithValue("@Phone", friend.Phone);
+                sqlCommand.Parameters.AddWithValue("@Birthday", friend.Birthday);
                 sqlCommand.ExecuteNonQuery();
+
+                statusOk = true;
             }
             catch (Exception ex)
             {
+                statusOk = false;
             }
             finally
             {
                 _sqlConnection.Close();
             }
+
+            return statusOk;
+
         }
 
         public void Delete(Friend friend)
@@ -107,9 +119,12 @@ namespace Data
                 {
                     Friend friend = new Friend
                     {
-                        Id = Guid.Parse(reader["Id"].ToString()),
-                        Name = reader["Name"].ToString(),
-                        Age = (int)reader["Age"]
+                        Id = Guid.Parse(reader.GetString(0)),
+                        Name = reader.GetString(1),
+                        SurName = reader.GetString(2),
+                        Email = reader.GetString(3),
+                        Phone = reader.GetInt32(4),
+                        Birthday = reader.GetDateTime(5)
                     };
                     friends.Add(friend);
                 }
@@ -123,6 +138,43 @@ namespace Data
             }
 
             return friends;
+        }
+        public Friend GetById(Guid Id)
+        {
+
+            SqlCommand sqlCommand = new SqlCommand("GetFriend", _sqlConnection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            try
+            {
+                _sqlConnection.Open();
+                sqlCommand.Parameters.AddWithValue("@Id", Id);
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Friend friend = new Friend
+                    {
+                        Name = reader["Name"].ToString(),
+                        SurName = reader["SurName"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        Phone = (int)reader["Phone"],
+                        Birthday = (DateTime)reader["Birthday"]
+                    };
+
+                    return friend;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                _sqlConnection.Close();
+            }
+            return null;
         }
     }
 }
