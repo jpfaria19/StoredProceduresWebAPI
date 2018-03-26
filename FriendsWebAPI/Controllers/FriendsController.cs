@@ -57,9 +57,18 @@ namespace FriendsWebAPI.Controllers
         }
 
         // DELETE: api/Friends/5
-        public void Delete(Guid Id)
+        public HttpResponseMessage Delete(Guid Id)
         {
-            _friendRepository.Delete();
+            var amg = _friendRepository.Delete(Id);
+
+            if (amg == true)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, amg);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, $"Id {Id} não encontrado");
+            }
         }
     }
 }

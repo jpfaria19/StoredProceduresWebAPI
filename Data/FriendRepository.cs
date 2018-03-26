@@ -80,8 +80,9 @@ namespace Data
 
         }
 
-        public void Delete(Friend friend)
+        public bool Delete(Guid Id)
         {
+            bool statusOk;
             SqlCommand sqlCommand = new SqlCommand("DeleteFriend", _sqlConnection)
             {
                 CommandType = CommandType.StoredProcedure
@@ -90,16 +91,21 @@ namespace Data
             try
             {
                 _sqlConnection.Open();
-                sqlCommand.Parameters.AddWithValue("@Id", friend.Id);
+                sqlCommand.Parameters.AddWithValue("@Id", Id);
                 sqlCommand.ExecuteNonQuery();
+
+                statusOk = true;
             }
             catch (Exception ex)
             {
+                statusOk = false;
             }
             finally
             {
                 _sqlConnection.Close();
             }
+
+            return statusOk;
         }
 
         public IEnumerable<Friend> GetAll()
