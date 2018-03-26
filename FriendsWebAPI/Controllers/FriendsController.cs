@@ -42,7 +42,7 @@ namespace FriendsWebAPI.Controllers
         }
 
         // PUT: api/Friends/5
-        public HttpResponseMessage Put(int Id, [FromBody]Friend friend)
+        public HttpResponseMessage Put(Guid Id, [FromBody]Friend friend)
         {
             var amg = _friendRepository.Update(friend, Id);
 
@@ -57,10 +57,9 @@ namespace FriendsWebAPI.Controllers
         }
 
         // DELETE: api/Friends/5
-        //public void Delete(int id)
-        //{
-        //    Friend friend = new Friend();
-        //    _friendRepository.Delete();
-        //}
+        public void Delete(Guid Id)
+        {
+            _friendRepository.Delete();
+        }
     }
 }

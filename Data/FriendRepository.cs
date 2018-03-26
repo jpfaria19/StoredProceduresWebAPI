@@ -46,7 +46,7 @@ namespace Data
             }
         }
 
-        public bool Update(Friend friend, int Id)
+        public bool Update(Friend friend, Guid Id)
         {
             bool statusOk;
             SqlCommand sqlCommand = new SqlCommand("UpdateFriend", _sqlConnection)
