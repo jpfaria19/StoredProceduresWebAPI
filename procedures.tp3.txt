@@ -1,0 +1,80 @@
+Store Procedure TP3 Azure:
+
+
+****** MINHA TABELA SE CHAMA ----> Friends <---- ******
+
+
+//####################### PEGAR TODOS OS AMIGOS #######################
+
+CREATE PROCEDURE GetAllFriends
+AS
+SELECT *
+FROM [dbo].[Friends]
+RETURN 0
+
+//#####################################################################
+
+
+//####################### CRIAR NOVO AMIGO ############################  
+
+CREATE PROCEDURE CreateFriend
+@Id VARCHAR(200), 
+@Name VARCHAR(150),
+@SurName VARCHAR(200),
+@Email VARCHAR(200),
+@Phone INT,
+@Birthday DATETIME
+AS
+INSERT INTO Friends(Id, Name, SurName, Email, Phone, Birthday)
+VALUES (@Id, @Name, @SurName, @Email, @Phone, @Birthday)
+RETURN 0
+
+
+---> ID VARCHAR PQ É GUID NO CÓDIGO.
+
+//#####################################################################
+
+
+//####################### PEGAR AMIGO PELO SEU ID #####################
+
+
+CREATE PROCEDURE GetFriend
+@Id AS VARCHAR(200)
+AS
+SELECT *
+FROM [dbo].[Friends]
+WHERE Id = @Id
+RETURN 0
+
+//#####################################################################
+
+
+//####################### DELETAR UM AMIGO ############################
+
+CREATE PROCEDURE DeleteFriend
+@Id VARCHAR(200)
+AS
+DELETE
+FROM Friends
+WHERE Id = @Id
+RETURN 0
+
+//#####################################################################
+
+
+//####################### ATUALIZAR UM AMIGO ##########################
+
+CREATE PROCEDURE UpdateFriend
+@Id VARCHAR(200),
+@Name VARCHAR(150),
+@SurName VARCHAR(200),
+@Email VARCHAR(200),
+@Phone INT,
+@Birthday DATETIME
+AS
+UPDATE Friends
+SET Name = @Name, SurName = @SurName, Email = @Email, Phone = @Phone, Birthday = @Birthday
+WHERE Id = @Id
+RETURN 0
+
+//#####################################################################
